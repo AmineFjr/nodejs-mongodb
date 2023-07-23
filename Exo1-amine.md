@@ -38,5 +38,14 @@ db.employees.find({}, {"name": 1, "job": 1, "_id": 0})
 
 Écrivez une requête pour compter le nombre d'employés par poste.
 
+db.employees.aggregate([
+  {
+    $group: {
+      _id: "$job",
+      count: { $sum: 1 }
+    }
+  }
+])
+
 Écrivez une requête pour mettre à jour le salaire de tous les développeurs à 80000.
--db.employee.updateMany( { job: "Developer" }, { $set: { "salary": 80000 } } )
+db.employee.updateMany( { job: "Developer" }, { $set: { "salary": 80000 } } )
