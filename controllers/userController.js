@@ -21,15 +21,18 @@ async function login(req, res)
     }
 }
 
-async function createUser({email, password})
+async function create(req, res)
 {
-    const hash = await bcrypt.hash(password,10)
+    let email = req.body.email
+    let password = req.body.password
+    let token = "";
+    let hash = await bcrypt.hash(password,10)
     let user = new User({
+        username : "test",
         email: email,
         password: hash,
+        isTeacher: false,
     });
-    const token = await jwt.sign({email: user.email}, 'secret_key');
-    user.token = token
     const userSave = await user.save(user)
     if(!userSave){
         return {error: true};
@@ -46,7 +49,7 @@ async function updateToken({userFind, password})
         const userSave = await userFind.save()
 
         const isAdmin = userFind.groupId === ADMIN_ID;
-        return {email: userFind.email, token,isAdmin,error:false};
+        return {email: userFind.email, token, isAdmin, error:false};
     }
     else {
         return {error: true};
@@ -66,4 +69,4 @@ async function logout(req,res){
 }
 
 
-module.exports = {login, logout, createUser};
+module.exports = {login, create};

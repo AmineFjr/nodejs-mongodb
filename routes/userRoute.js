@@ -4,11 +4,10 @@ const config  = require('../config')
 const cors = require('cors')
 
 const userController = require('../controllers/userController');
-const {checkAuth} = require("../middlewares/auth");
+//const {checkAuth} = require("../middlewares/auth");
 
-
-router.post('/login', cors(config.corsOptions), userController.login);
-router.post('/logout', cors(config.corsOptions), checkAuth, userController.logout);
-router.post('/register', cors(config.corsOptions), checkAuth, userController.logout);
+router.post('/login', userController.login);
+//router.post('/logout', cors(config.corsOptions), userController.logout);
+router.post('/register', userController.create);
 
 module.exports = router;
