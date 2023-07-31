@@ -5,15 +5,12 @@ const ADMIN_ID = 3
 
 async function login(req, res) {
     try {
-        const userFind = await User.findOne({ email: req.body.email });
-    
-        console.log(userFind)
+        let userFind = await User.findOne({ email: req.body.email });
         if (userFind) {
             let password = req.body.password;
-            const result = await updateToken({ userFind, password });
+            let result = await updateToken({ userFind, password });
             res.status(200).json(result);
         } else {
-            console.log('User not found');
             res.status(401).json({ error: 'User not found' });
         }
 
@@ -66,11 +63,10 @@ async function create(req, res) {
 async function updateToken({ userFind, password }) {
     let isValid = await bcrypt.compare(password, userFind.password)
     if (isValid) {
-        const token = await jwt.sign({ email: userFind.email }, 'secret_key');
+        let token = await jwt.sign({ email: userFind.email }, 'secret_key');
         userFind.token = token
-        const userSave = await userFind.save()
-
-        const isAdmin = userFind.isTeacher === ADMIN_ID;
+        await userFind.save()
+        let isAdmin = userFind.isTeacher === ADMIN_ID;
         return { email: userFind.email, token, isAdmin};
     }
     else {
@@ -79,16 +75,11 @@ async function updateToken({ userFind, password }) {
 }
 
 async function logout(req, res) {
-    const email = req.body.email;
-    const userFind = await User.findOne({
-        where: {
-            email: email
-        }
-    })
-    userFind.token = null
-    const userSave = await userFind.save()
-    res.status(200).json({ error: false });
+    let userFind = await User.findOne({ email: req.body.email });
+    userFind.token = ""
+    await userFind.save()
+    res.status(200).json({ error: 'You are logout, now!' });
 }
 
 
-module.exports = { login, create };
+module.exports = { login, create, logout };
