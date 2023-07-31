@@ -81,7 +81,7 @@ db.salles.updateMany({ "nom": { $regex: "^[AEIOUaeiou]" } }, { $push: { "avis": 
 
 db.salles.updateMany({ "nom": { $regex: "^[Zz]" } }, { $set: { "nom": "Pub Z", "capacite": 50, "smac": false } }, { upsert: true })
 
-- Exercice 21 x
+- Exercice 21 
 
 db.salles.count({ "_id": { $type: "objectId" } })
 
