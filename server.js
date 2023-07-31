@@ -3,7 +3,6 @@ const userRoute = require('./routes/userRoute')
 const cors = require('cors')
 const config = require('./config')
 const app = express();
-const mongodb = require("./db.js")
 const dotEnv = require('dotenv').config()
 const formData = require('express-form-data')
 const User = require("./models/userModel")
@@ -15,9 +14,9 @@ app.use(formData.parse())
 
 app.use('/api', userRoute)
 
-mongoose.connect(process.env.BDD, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.BDD,{ useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch((err) => console.log('Unable to connect to the database:', err)
+    .catch((err) => console.log(err)
 );
 
 const PORT = process.env.PORT || 6000;
