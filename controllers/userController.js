@@ -5,20 +5,18 @@ const ADMIN_ID = 3
 
 async function login(req, res) {
     try {
-        let email = req.body.email;
-        let password = req.body.password;
-        let userFind = await User.findOne({
-            where: {
-                email: email
-            }
-        });
-
-        if (!userFind) {
-            res.status(401).json({ error: 'User not found' });
-        } else {
+        const userFind = await User.findOne({ email: req.body.email });
+    
+        console.log(userFind)
+        if (userFind) {
+            let password = req.body.password;
             const result = await updateToken({ userFind, password });
             res.status(200).json(result);
+        } else {
+            console.log('User not found');
+            res.status(401).json({ error: 'User not found' });
         }
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });
@@ -72,11 +70,11 @@ async function updateToken({ userFind, password }) {
         userFind.token = token
         const userSave = await userFind.save()
 
-        const isAdmin = userFind.groupId === ADMIN_ID;
-        return { email: userFind.email, token, isAdmin, error: false };
+        const isAdmin = userFind.isTeacher === ADMIN_ID;
+        return { email: userFind.email, token, isAdmin};
     }
     else {
-        return { error: true };
+        return { error: "Check Your Password, something is wrong" };
     }
 }
 
