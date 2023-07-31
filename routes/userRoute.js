@@ -6,9 +6,8 @@ const cors = require('cors')
 const userController = require('../controllers/userController');
 //const {checkAuth} = require("../middlewares/auth");
 
-router.post('/login', userController.login);
-//router.post('/logout', cors(config.corsOptions), userController.logout);
-router.post('/register', userController.create);
-router.post('/logout', userController.logout);
+router.post('/login', cors(config.corsOptions), userController.login);
+router.post('/register', cors(config.corsOptions), userController.create);
+router.post('/logout', cors(config.corsOptions), userController.logout);
 
 module.exports = router;

@@ -67,7 +67,7 @@ async function updateToken({ userFind, password }) {
         userFind.token = token
         await userFind.save()
         let isAdmin = userFind.isTeacher === ADMIN_ID;
-        return { email: userFind.email, token, isAdmin};
+        return { email: userFind.email, token, isAdmin };
     }
     else {
         return { error: "Check Your Password, something is wrong" };
