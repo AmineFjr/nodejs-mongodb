@@ -32,7 +32,7 @@ async function create(req, res) {
         let user = new User({
             username: username,
             email: email,
-            password: hash
+            password: hash,
         });
 
         let userFind = await User.findOne({
@@ -64,7 +64,8 @@ async function updateToken({ userFind, password }) {
         let token = await jwt.sign({ email: userFind.email }, 'secret_key');
         userFind.token = token
         await userFind.save()
-        return { email: userFind.email, token };
+        let isAdmin = false;
+        return { email: userFind.email, token, isAdmin, id: userFind._id };
     }
     else {
         return { error: "Check Your Password, something is wrong" };
