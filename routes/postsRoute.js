@@ -12,9 +12,9 @@ router.get('/:id', postsCtrl.getOnePosts);
 
 router.put('/:id', auth ,  postsCtrl.modifyPosts);
 
-router.delete('/:id', auth, postsCtrl.deletePosts);
+router.delete('/:id' , postsCtrl.deletePosts);
 
-router.post('/:id/like', auth, postsCtrl.likePosts);
+router.post('/:id/like', postsCtrl.likePosts);
 
 
 module.exports = router;

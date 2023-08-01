@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, 'secret_key');
         const userId = decodedToken.id;
-
+    console.log(userId);
         // Vérification de la concordance entre les clés utilisateurs
         if (req.body.userId && req.body.userId !== userId) {
             throw 'User ID non valable !';
