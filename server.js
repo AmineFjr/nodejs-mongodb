@@ -12,6 +12,7 @@ app.use(express.json())
 app.use(cors(config.corsOptions))
 app.use(formData.parse())
 
+app.use('/api/posts', postsRoutes);
 app.use('/api', userRoute)
 
 mongoose.connect(process.env.BDD,{ useNewUrlParser: true, useUnifiedTopology: true })
