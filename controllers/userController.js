@@ -26,15 +26,13 @@ async function create(req, res) {
         let email = req.body.email
         let password = req.body.password
         let username = req.body.username
-        let isTeacher = req.body.isTeacher
         let token = "";
         let hash = await bcrypt.hash(password, 10)
 
         let user = new User({
             username: username,
             email: email,
-            password: hash,
-            isTeacher: isTeacher
+            password: hash
         });
 
         let userFind = await User.findOne({
@@ -66,8 +64,7 @@ async function updateToken({ userFind, password }) {
         let token = await jwt.sign({ email: userFind.email }, 'secret_key');
         userFind.token = token
         await userFind.save()
-        let isAdmin = userFind.isTeacher === ADMIN_ID;
-        return { email: userFind.email, token, isAdmin };
+        return { email: userFind.email, token };
     }
     else {
         return { error: "Check Your Password, something is wrong" };

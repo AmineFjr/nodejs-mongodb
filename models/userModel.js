@@ -14,10 +14,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    isTeacher: {
-        type: Boolean,
-        default: false
-    },
     last_activity_at: {
         type: Date,
     },
