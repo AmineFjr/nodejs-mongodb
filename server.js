@@ -3,10 +3,11 @@ const userRoute = require('./routes/userRoute')
 const cors = require('cors')
 const config = require('./config')
 const app = express();
-const dotEnv = require('dotenv').config()
 const formData = require('express-form-data')
-const User = require("./models/userModel")
+const postsRoutes = require('./routes/postsRoute')
 const mongoose = require('mongoose')
+
+require('dotenv').config()
 
 app.use(express.json())
 app.use(cors(config.corsOptions))
@@ -15,10 +16,13 @@ app.use(formData.parse())
 app.use('/api/posts', postsRoutes);
 app.use('/api', userRoute)
 
-mongoose.connect(process.env.BDD,{ useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connexion à MongoDB réussie !'))
-    .catch((err) => console.log(err)
-);
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.w3ata7b.mongodb.net/${process.env.BDD}?retryWrites=true&w=majority`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Connexion réussie !');
+    app.listen(process.env.PORT || 3000);
+}).catch((e) => {
+    console.log('Connexion échouée !: ', e)
+})
 
-const PORT = process.env.PORT || 6000;
-app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT} ...`));
