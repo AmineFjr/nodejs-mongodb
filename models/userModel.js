@@ -1,26 +1,29 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username:{
-        type:String,
-        required:true,
+    email: {
+        type: String,
+        required: true,
         unique: true
     },
-    email:{
-        type:String,
-        required:true,
-        unique: true
+    password: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
-        required:true
+    username: {
+        type: String,
+        required: true
     },
-    last_activity_at:{
-        type:Date,
+    isTeacher: {
+        type: Boolean,
+        default: false
     },
-    token:{
-        type:String,
-        default:""
+    last_activity_at: {
+        type: Date,
+    },
+    token: {
+        type: String,
+        default: ""
     }
 });
 

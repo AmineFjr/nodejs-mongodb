@@ -1,0 +1,6 @@
+Mongodb : système de gestion de bd no sql , orienté collection 
+Nodejs : est une plateforme logicielle qui permet d’exécuter du JavaScript côté serveur. Il se démarque par l'utilisation d'un système de boucle d'évènement qui permet l’exécution d'opérations de manière asynchrone.
+package : npm , yarn, pnpm 
+node module : lieu de stockage de dependance 
+Format dans mongo : bson b pour binary 
+

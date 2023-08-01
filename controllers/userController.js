@@ -3,67 +3,83 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const ADMIN_ID = 3
 
-async function login(req, res)
-{
-    const email = req.body.email;
-    const password = req.body.password;
-    const userFind = await User.findOne({
-        where: {
-            email: email
+async function login(req, res) {
+    try {
+        let userFind = await User.findOne({ email: req.body.email });
+        if (userFind) {
+            let password = req.body.password;
+            let result = await updateToken({ userFind, password });
+            res.status(200).json(result);
+        } else {
+            res.status(401).json({ error: 'User not found' });
         }
-    })
-    if (!userFind){
-        const result = await createUser({email, password})
-        res.status(200).json(result);
-    } else {
-        const result = await updateToken({userFind, password})
-        res.status(200).json(result);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
-async function createUser({email, password})
-{
-    const hash = await bcrypt.hash(password,10)
-    let user = new User({
-        email: email,
-        password: hash,
-    });
-    const token = await jwt.sign({email: user.email}, 'secret_key');
-    user.token = token
-    const userSave = await user.save(user)
-    if(!userSave){
-        return {error: true};
+
+async function create(req, res) {
+    try {
+        let email = req.body.email
+        let password = req.body.password
+        let username = req.body.username
+        let isTeacher = req.body.isTeacher
+        let token = "";
+        let hash = await bcrypt.hash(password, 10)
+
+        let user = new User({
+            username: username,
+            email: email,
+            password: hash,
+            isTeacher: isTeacher
+        });
+
+        let userFind = await User.findOne({
+            where: {
+                email: email
+            }
+        })
+
+        if (userFind) {
+            res.status(401).json({ error: 'user already exist' });
+        } else {
+            let userSave = await user.save(user)
+            res.status(200).json(userSave);
+        }
+
+    } catch (error) {
+        if (error.code === 11000) {
+            res.status(401).json({ error: 'Email already exists' });
+        } else {
+            console.error(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     }
-    return {email: userSave.email, token, error:false};
 }
 
-async function updateToken({userFind, password})
-{
+async function updateToken({ userFind, password }) {
     let isValid = await bcrypt.compare(password, userFind.password)
-    if(isValid) {
-        const token = await jwt.sign({email: userFind.email}, 'secret_key');
+    if (isValid) {
+        let token = await jwt.sign({ email: userFind.email }, 'secret_key');
         userFind.token = token
-        const userSave = await userFind.save()
-
-        const isAdmin = userFind.groupId === ADMIN_ID;
-        return {email: userFind.email, token,isAdmin,error:false};
+        await userFind.save()
+        let isAdmin = userFind.isTeacher === ADMIN_ID;
+        return { email: userFind.email, token, isAdmin };
     }
     else {
-        return {error: true};
+        return { error: "Check Your Password, something is wrong" };
     }
 }
 
-async function logout(req,res){
-    const email = req.body.email;
-    const userFind = await User.findOne({
-        where: {
-            email: email
-        }
-    })
-    userFind.token = null
-    const userSave = await userFind.save()
-    res.status(200).json({error:false});
+async function logout(req, res) {
+    let userFind = await User.findOne({ email: req.body.email });
+    userFind.token = ""
+    await userFind.save()
+    res.status(200).json({ error: 'You are logout, now!' });
 }
 
 
-module.exports = {login, logout, createUser};
+module.exports = { login, create, logout };
